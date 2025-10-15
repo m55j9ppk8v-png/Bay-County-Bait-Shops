@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bay County Florida Live Bait Shops</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+            animation: fadeIn 1s ease-in;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .search-box {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        #searchInput {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        #searchInput:focus {
+            border-color: #764ba2;
+        }
+        
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .filter-btn {
+            background: white;
+            color: #667eea;
+            border: 2px solid #667eea;
+            padding: 10px 20px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+        
+        .filter-btn:hover, .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+        
+        .shops-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 25px;
+            animation: fadeIn 1.5s ease-in;
+        }
+        
+        .shop-card {
+            background: white;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        
+        .shop-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        
+        .shop-card.warning {
+            border-left: 4px solid #ff9800;
+        }
+        
+        .shop-name {
+            color: #667eea;
+            font-size: 1.4em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .shop-info {
+            color: #555;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: start;
+        }
+        
+        .shop-info strong {
+            min-width: 80px;
+            color: #333;
+        }
+        
+        .shop-info a {
+            color: #667eea;
+            text-decoration: none;
+        }
+        
+        .shop-info a:hover {
+            text-decoration: underline;
+        }
+        
+        .tag {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            margin-top: 10px;
+            margin-right: 5px;
+        }
+        
+        .location-badge {
+            background: #4CAF50;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        
+        .warning-badge {
+            background: #ff9800;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.85em;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            h1 { font-size: 2em; }
+            .shops-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎣 Bay County Live Bait Shops</h1>
+            <p class="subtitle">Your guide to bait shops in Panama City & Panama City Beach</p>
+        </header>
+        
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search by name, location, or services...">
+        </div>
+        
+        <div class="filter-buttons">
+            <button class="filter-btn active" data-filter="all">All Shops</button>
+            <button class="filter-btn" data-filter="Panama City">Panama City</button>
+            <button class="filter-btn" data-filter="Panama City Beach">PCB</button>
+        </div>
+        
+        <div class="shops-grid" id="shopsGrid"></div>
+    </div>
+
+    <script>
+        const shops = [
+            {
+                name: "Howell Tackle Supply",
+                address: "3100 W Hwy 98, Panama City, FL 32401",
+                phone: "(850) 785-8548",
+                city: "Panama City",
+                services: ["Live Bait", "Tackle", "Fishing Supplies", "Expert Advice"],
+                pricing: "Call for current prices",
+                website: null,
+                status: "active"
+            },
+            {
+                name: "Half Hitch Tackle — Panama City",
+                address: "Panama City, FL (Bay County location)",
+                phone: "See website for details",
+                city: "Panama City",
+                services: ["Live Bait", "Premium Tackle", "Fishing Gear"],
+                pricing: "Call for current prices",
+                website: "halfhitch.com",
+                status: "active"
+            },
+            {
+                name: "Bay Breeze Bait & Tackle",
+                address: "21301 Panama City Beach Pkwy, Panama City Beach, FL 32413",
+                phone: "(850) 235-0775",
+                city: "Panama City Beach",
+                services: ["Live Bait", "Tackle", "Beach Fishing Supplies"],
+                pricing: "Call for current prices",
+                website: null,
+                status: "active"
+            },
+            {
+                name: "Buster's Beer and Bait",
+                address: "5900 Thomas Drive, Panama City, FL 32408",
+                phone: "(850) 234-9250",
+                city: "Panama City Beach",
+                services: ["Live Bait", "Beer", "Convenience Items", "Beach Essentials"],
+                pricing: "Call for current prices",
+                website: null,
+                status: "active"
+            },
+            {
+                name: "Dam Bait & Tackle / Southern Green",
+                address: "4402 County Road 2321, Panama City, FL 32404",
+                phone: "(850) 710-0320",
+                city: "Panama City",
+                services: ["Live Bait", "Tackle", "Fishing Gear"],
+                pricing: "Call for current prices",
+                website: null,
+                status: "active"
+            },
+            {
+                name: "Pier 98 Marina",
+                address: "5904 E Highway 98, Panama City, FL",
+                phone: "(850) 874-8723",
+                city: "Panama City",
+                services: ["Live Bait", "Tackle", "Marina Services", "Boat Access"],
+                pricing: "Call for current prices",
+                website: null,
+                status: "active"
+            },
+            {
+                name: "M.B. Miller County Pier / Coastal Tackle",
+                address: "12213 Front Beach Road, Panama City Beach, FL",
+                phone: "(850) 236-3035",
+                city: "Panama City Beach",
+                services: ["Live Bait", "Tackle", "Pier Fishing", "Beach Access"],
+                pricing: "Call for current prices",
+                website: null,
+                status: "active"
+            },
+            {
+                name: "Shrimp City Bait Shop",
+                address: "Thomas Drive, Panama City Beach, FL",
+                phone: "Call for info",
+                city: "Panama City Beach",
+                services: ["Live Shrimp", "Live Bait", "Fishing Supplies"],
+                pricing: "Call for current prices",
+                website: null,
+                status: "verify",
+                warning: "⚠️ Call ahead for exact address and current hours"
+            }
+        ];
+
+        let currentFilter = 'all';
+
+        function renderShops(filteredShops) {
+            const grid = document.getElementById('shopsGrid');
+            grid.innerHTML = '';
+            
+            filteredShops.forEach(shop => {
+                const card = document.createElement('div');
+                card.className = 'shop-card' + (shop.warning ? ' warning' : '');
+                card.innerHTML = `
+                    <div class="shop-name">
+                        ${shop.name}
+                        <span class="location-badge">${shop.city === 'Panama City Beach' ? 'PCB' : shop.city}</span>
+                    </div>
+                    ${shop.warning ? `<div class="warning-badge">${shop.warning}</div>` : ''}
+                    <div class="shop-info">
+                        <strong>Address:</strong>
+                        <span><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(shop.address)}" target="_blank">${shop.address}</a></span>
+                    </div>
+                    <div class="shop-info">
+                        <strong>Phone:</strong>
+                        <span>${shop.phone.includes('(') ? `<a href="tel:${shop.phone.replace(/[^0-9]/g, '')}">${shop.phone}</a>` : shop.phone}</span>
+                    </div>
+                    ${shop.website ? `<div class="shop-info">
+                        <strong>Website:</strong>
+                        <span><a href="https://${shop.website}" target="_blank">${shop.website}</a></span>
+                    </div>` : ''}
+                    <div class="shop-info">
+                        <strong>Pricing:</strong>
+                        <span style="color: #764ba2; font-style: italic;">${shop.pricing}</span>
+                    </div>
+                    <div style="margin-top: 15px;">
+                        ${shop.services.map(service => `<span class="tag">${service}</span>`).join('')}
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterShops() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            let filtered = shops;
+
+            if (currentFilter !== 'all') {
+                filtered = filtered.filter(shop => shop.city === currentFilter);
+            }
+
+            if (searchTerm) {
+                filtered = filtered.filter(shop => 
+                    shop.name.toLowerCase().includes(searchTerm) ||
+                    shop.address.toLowerCase().includes(searchTerm) ||
+                    shop.city.toLowerCase().includes(searchTerm) ||
+                    shop.services.some(service => service.toLowerCase().includes(searchTerm))
+                );
+            }
+
+            renderShops(filtered);
+        }
+
+        document.getElementById('searchInput').addEventListener('input', filterShops);
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                e.target.classList.add('active');
+                currentFilter = e.target.dataset.filter;
+                filterShops();
+            });
+        });
+
+        renderShops(shops);
+    </script>
+</body>
+</html>
